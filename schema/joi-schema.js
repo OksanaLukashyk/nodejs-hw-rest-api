@@ -18,4 +18,8 @@ const updSchema = Joi.object({
   phone: Joi.string(),
 });
 
-module.exports = { addSchema, updSchema };
+const updFavoriteSchema = Joi.object({
+  favorite: Joi.boolean().required(),
+});
+
+module.exports = { addSchema, updSchema, updFavoriteSchema };
