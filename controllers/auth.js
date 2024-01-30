@@ -1,11 +1,18 @@
+require("dotenv").config();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const HttpError = require("../helpers/HttpError");
 const TryCatch = require("../helpers/TryCatch");
 const User = require("../models/User");
-require("dotenv").config();
+const { authUserSchema, subscrSchema } = require("../schema/authSchema");
 
 const register = async (req, res, next) => {
+  const { error } = authUserSchema.validate(req.body);
+
+  if (error) {
+    throw HttpError(400, error.message);
+  }
+
   const { email, password } = req.body;
   const user = await User.findOne({ email });
 
@@ -26,6 +33,12 @@ const register = async (req, res, next) => {
 };
 
 const login = async (req, res, next) => {
+  const { error } = authUserSchema.validate(req.body);
+
+  if (error) {
+    throw HttpError(400, error.message);
+  }
+
   const { email, password } = req.body;
   const user = await User.findOne({ email });
 
@@ -54,9 +67,9 @@ const login = async (req, res, next) => {
 
 const logout = async (req, res) => {
   const { _id } = req.user;
-  await User.findByIdAndUpdate(_id, { token: "" });
+  await User.findByIdAndUpdate(_id, { token: null });
 
-  res.status(204).json({});
+  res.status(204).end();
 };
 
 const getCurrent = async (req, res) => {
@@ -65,6 +78,12 @@ const getCurrent = async (req, res) => {
 };
 
 const updSubscription = async (req, res) => {
+  const { error } = subscrSchema.validate(req.body);
+
+  if (error) {
+    throw HttpError(400, error.message);
+  }
+
   const { _id } = req.user;
   const subscription = await User.findByIdAndUpdate(_id, req.body, {
     new: true,
