@@ -9,5 +9,7 @@ authRouter.post("/login", jsonParser, authController.login);
 authRouter.post("/logout", isAuth, authController.logout);
 authRouter.get("/current", isAuth, authController.getCurrent);
 authRouter.patch("/", isAuth, authController.updSubscription);
+authRouter.get("/verify/:verificationToken", authController.verify);
+authRouter.post("/verify", authController.resendVerify);
 
 module.exports = authRouter;
